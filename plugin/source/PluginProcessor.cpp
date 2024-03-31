@@ -121,9 +121,11 @@ bool AudioPluginAudioProcessor::isBusesLayoutSupported (const BusesLayout& layou
     return true;
   #endif
 }
-
+//Removed the variable for juce::MidiBuffer type. This is because we can 
+//remove variable names in a function if those variables are not being used 
+//This keeps there from being an error compiling on windows (unused parameter error)
 void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
-                                              juce::MidiBuffer& midiMessages)
+                                              juce::MidiBuffer& )
 {
   juce::ScopedNoDenormals noDenormals; 
 
