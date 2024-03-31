@@ -9,11 +9,28 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     juce::ignoreUnused (processorRef);
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
+    addAndMakeVisible(horizontalMeterL); 
+    addAndMakeVisible(horizontalMeterR); 
     setSize (400, 300);
+
+    //Here we have startTimer in the constructor 
+    //startTimer() accepts time in ms and startTimerHz accepts inverse of that 
+    //Here we want to render it 24 times a second 
+    startTimerHz(24); 
 }
 
 AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor()
 {
+}
+
+void AudioPluginAudioProcessorEditor::timerCallback(){
+  //Here the usage of processorRef is calling on the AudioProcessorEditor the processorRef is a quick
+  //way to access the audioprocessoreditor object
+  horizontalMeterL.setLevel(processorRef.getRmsValue(0)); 
+  horizontalMeterR.setLevel(processorRef.getRmsValue(1)); 
+
+  horizontalMeterL.repaint(); 
+  horizontalMeterR.repaint(); 
 }
 
 //==============================================================================
@@ -31,4 +48,9 @@ void AudioPluginAudioProcessorEditor::resized()
 {
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
+    //
+    //for setbounds the first two arguments are the x and y pixel position and the 3rd argument is 
+    //the width and then the last argument is the height
+    horizontalMeterL.setBounds(100, 100, 200, 15); 
+    horizontalMeterR.setBounds(100,120, 200, 15); 
 }
