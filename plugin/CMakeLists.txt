@@ -14,6 +14,8 @@ juce_add_plugin(${PROJECT_NAME}
   PRODUCT_NAME "Baikal Spectrum Analyzer"
 )
 
+juce_generate_juce_header(${PROJECT_NAME})
+
 target_sources(${PROJECT_NAME}
   PRIVATE 
     source/PluginEditor.cpp
