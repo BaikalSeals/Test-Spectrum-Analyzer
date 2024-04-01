@@ -9,8 +9,8 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     juce::ignoreUnused (processorRef);
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    addAndMakeVisible(horizontalMeterL); 
-    addAndMakeVisible(horizontalMeterR); 
+    addAndMakeVisible(verticalMeterL); 
+    addAndMakeVisible(verticalMeterR); 
     setSize (400, 300);
 
     //Here we have startTimer in the constructor 
@@ -26,11 +26,11 @@ AudioPluginAudioProcessorEditor::~AudioPluginAudioProcessorEditor()
 void AudioPluginAudioProcessorEditor::timerCallback(){
   //Here the usage of processorRef is calling on the AudioProcessorEditor the processorRef is a quick
   //way to access the audioprocessoreditor object
-  horizontalMeterL.setLevel(processorRef.getRmsValue(0)); 
-  horizontalMeterR.setLevel(processorRef.getRmsValue(1)); 
+  verticalMeterL.setLevel(processorRef.getRmsValue(0)); 
+  verticalMeterR.setLevel(processorRef.getRmsValue(1)); 
 
-  horizontalMeterL.repaint(); 
-  horizontalMeterR.repaint(); 
+  verticalMeterL.repaint(); 
+  verticalMeterR.repaint(); 
 }
 
 //==============================================================================
@@ -51,6 +51,6 @@ void AudioPluginAudioProcessorEditor::resized()
     //
     //for setbounds the first two arguments are the x and y pixel position and the 3rd argument is 
     //the width and then the last argument is the height
-    horizontalMeterL.setBounds(100, 100, 200, 15); 
-    horizontalMeterR.setBounds(100,120, 200, 15); 
+    verticalMeterL.setBounds(120, 100, 15, 200); 
+    verticalMeterR.setBounds(100,100, 15, 200); 
 }

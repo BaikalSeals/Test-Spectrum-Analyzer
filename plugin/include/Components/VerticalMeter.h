@@ -5,9 +5,9 @@
 namespace Gui 
 {
 
-  class HorizontalMeter : public Component{
+  class VerticalMeter : public Component{
     public:
-      //This function creates the visuals for the level HorizontalMeter 
+      //This function creates the visuals for the level VerticalMeter 
       void paint(Graphics& g) override{
         //First it finds and sets the bounds of the meter
         auto bounds = getLocalBounds().toFloat(); 
@@ -21,13 +21,12 @@ namespace Gui
         //We can now map from -60 to 6 to the width of the rounded rectangle
         //Here we need to also make sure all variables are floats since the jmap function
         //is a templated function and therefore all variables need to be the same type
-        const auto scaledX = jmap(level, -60.f, 6.f, 0.f, static_cast<float>(getWidth()));
+        const auto scaledX = jmap(level, -60.f, 6.f, 0.f, static_cast<float>(getHeight()));
         //Now that we know how much the foreground rectangle should be (width scaledX) then we 
         //call removeFromLeft to remove up until scaledX is reached and that is the value of 
         //how much we fill. Now with that variable checked we again just tell it to fill a 
         //rounded rectangle by the amount needed to be filled and round off the edges by 5.0
-        g.fillRoundedRectangle(bounds.removeFromLeft(scaledX), 5.f); 
-
+        g.fillRoundedRectangle(bounds.removeFromBottom(scaledX), 5.f); 
       }
 
       void setLevel(const float value){

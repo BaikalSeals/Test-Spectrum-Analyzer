@@ -1,7 +1,7 @@
 #pragma once
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
-#include "Components/HorizontalMeter.h"
+#include "Components/VerticalMeter.h"
 
 //==============================================================================
 class AudioPluginAudioProcessorEditor  : public juce::AudioProcessorEditor, public Timer
@@ -22,7 +22,7 @@ private:
     // access the processor object that created it.
     AudioPluginAudioProcessor& processorRef;
 
-    Gui::HorizontalMeter horizontalMeterL, horizontalMeterR; 
+    Gui::VerticalMeter verticalMeterL, verticalMeterR;  
 
     
 
