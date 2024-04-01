@@ -11,7 +11,7 @@ AudioPluginAudioProcessorEditor::AudioPluginAudioProcessorEditor (AudioPluginAud
     // editor's size to whatever you need it to be.
     addAndMakeVisible(verticalMeterL); 
     addAndMakeVisible(verticalMeterR); 
-    setSize (400, 300);
+    setSize (700, 400);
 
     //Here we have startTimer in the constructor 
     //startTimer() accepts time in ms and startTimerHz accepts inverse of that 
@@ -51,6 +51,6 @@ void AudioPluginAudioProcessorEditor::resized()
     //
     //for setbounds the first two arguments are the x and y pixel position and the 3rd argument is 
     //the width and then the last argument is the height
-    verticalMeterL.setBounds(120, 100, 15, 200); 
-    verticalMeterR.setBounds(100,100, 15, 200); 
+    verticalMeterL.setBounds(30, 190, 15, 200); 
+    verticalMeterR.setBounds(10,190, 15, 200); 
 }
