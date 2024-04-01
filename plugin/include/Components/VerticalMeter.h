@@ -22,27 +22,29 @@ namespace Gui
         //It will be more transparent and behind the main volume meter 
         ColourGradient truePeakGradient; 
         truePeakGradient = ColourGradient::vertical(
-            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), 0.2f), 
-            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.45f),
+            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), 0.5f), 
+            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.3f),
             bounds);
 
-        truePeakGradient.addColour(0.25,Colour(static_cast<juce::uint8>(102), static_cast<juce::uint8>(255), static_cast<juce::uint8>(204), 0.45f)); 
+        truePeakGradient.addColour(0.25,Colour(static_cast<juce::uint8>(102), static_cast<juce::uint8>(255), static_cast<juce::uint8>(204), 0.5f)); 
 
         g.setGradientFill(truePeakGradient); 
 
         const auto scaledX1 = jmap(peak, -60.f, +6.f, 0.f, static_cast<float>(getHeight())); 
-        g.fillRoundedRectangle(bounds.removeFromBottom(scaledX1), 5.0f); 
-        //Now we have created the background of the level meter but we need the foreground 
-        //Here we create a colorgradient and then we set that color gradient object to a gradient object with specific
-        //values 
+        g.fillRect(bounds.removeFromBottom(scaledX1));
+
+        auto bounds2 = getLocalBounds().toFloat();
+        // Now we have created the background of the level meter but we need the foreground 
+        // Here we create a colorgradient and then we set that color gradient object to a gradient object with specific
+        // values 
         ColourGradient SealTeal;
         SealTeal = ColourGradient::vertical(
-            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), 0.4f), 
-            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.9f),
-            bounds);
-        
+            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), 1.f), 
+            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.3f),
+            bounds2);
+
         //Now we add a color to the gradient object we have
-        SealTeal.addColour(0.25,Colour(static_cast<juce::uint8>(102), static_cast<juce::uint8>(255), static_cast<juce::uint8>(204), 0.9f)); 
+        SealTeal.addColour(0.25,Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), static_cast<juce::uint8>(171), 0.9f)); 
         //Now we set g to set the gradient fill to the gradient object we created 
         g.setGradientFill(SealTeal);
 
@@ -54,7 +56,7 @@ namespace Gui
         //call removeFromLeft to remove up until scaledX is reached and that is the value of 
         //how much we fill. Now with that variable checked we again just tell it to fill a 
         //rounded rectangle by the amount needed to be filled and round off the edges by 5.0
-        g.fillRoundedRectangle(bounds.removeFromBottom(scaledX2), 5.0f); 
+        g.fillRect(bounds2.removeFromBottom(scaledX2)); 
 
       }
 
