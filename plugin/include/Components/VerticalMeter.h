@@ -22,9 +22,11 @@ namespace Gui
         //g.setColour(Colours::teal);
         ColourGradient SealTeal;
         SealTeal = ColourGradient::vertical(
-            Colour(static_cast<juce::uint8>(102), static_cast<juce::uint8>(255), static_cast<juce::uint8>(204), 0.95f), 
+            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), 0.4f), 
             Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.9f),
-            bounds); 
+            bounds);
+
+        SealTeal.addColour(0.2,Colour(static_cast<juce::uint8>(102), static_cast<juce::uint8>(255), static_cast<juce::uint8>(204), 0.9f)); 
         g.setGradientFill(SealTeal);
         //We can now map from -60 to 6 to the width of the rounded rectangle
         //Here we need to also make sure all variables are floats since the jmap function

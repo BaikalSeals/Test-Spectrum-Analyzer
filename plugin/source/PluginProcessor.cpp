@@ -130,7 +130,9 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
   juce::ScopedNoDenormals noDenormals; 
 
   rmsLevelLeft = Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples())); 
-  rmsLevelRight = Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples())); 
+  rmsLevelRight = Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
+
+  
 }
 
 //==============================================================================
@@ -160,7 +162,9 @@ void AudioPluginAudioProcessor::setStateInformation (const void* data, int sizeI
     juce::ignoreUnused (data, sizeInBytes);
 }
 
-//Added 
+//Added ==========================================================
+//
+//Gets Rms Value in order for the meter to display volume
 float AudioPluginAudioProcessor::getRmsValue(const int channel) const {
       jassert(channel == 0 || channel == 1); 
       if(channel == 0){
@@ -171,6 +175,13 @@ float AudioPluginAudioProcessor::getRmsValue(const int channel) const {
       }
       return 0.f; 
   }
+
+
+//
+
+
+
+
 
 
 //==============================================================================
