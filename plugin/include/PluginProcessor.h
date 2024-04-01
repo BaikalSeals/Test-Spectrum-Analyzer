@@ -49,11 +49,16 @@ public:
     //rms values for the volume meter
     float getRmsValue(const int channel) const;
     
-    //
+    //peak values for the volume meter 
+    float getPeakValue(const int channel) const; 
     
 
 private:
+    //Gets rms levels for the volume meter
     float rmsLevelLeft, rmsLevelRight; 
+    //values for peak value 
+    float peakLeft, peakRight; 
+    
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
 };

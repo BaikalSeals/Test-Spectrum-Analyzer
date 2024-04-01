@@ -129,9 +129,14 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 {
   juce::ScopedNoDenormals noDenormals; 
 
+  //Gets the rms levels using the getRmsLevel function 
   rmsLevelLeft = Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples())); 
   rmsLevelRight = Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
-
+  
+  //Gets the peak levels using getMagnitude 
+  peakLeft = Decibels::gainToDecibels(buffer.getMagnitude(0, 0, buffer.getNumSamples())); 
+  peakRight = Decibels::gainToDecibels(buffer.getMagnitude(1, 0, buffer.getNumSamples())); 
+ 
   
 }
 
@@ -176,7 +181,16 @@ float AudioPluginAudioProcessor::getRmsValue(const int channel) const {
       return 0.f; 
   }
 
-
+float AudioPluginAudioProcessor::getPeakValue(const int channel) const {
+  jassert(channel == 0 || channel == 1); 
+  if(channel == 0){
+    return peakLeft; 
+  }
+  if(channel == 1){
+    return peakRight; 
+  }
+  return 0.f; 
+}
 //
 
 

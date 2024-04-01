@@ -28,6 +28,8 @@ void AudioPluginAudioProcessorEditor::timerCallback(){
   //way to access the audioprocessoreditor object
   verticalMeterL.setLevel(processorRef.getRmsValue(0)); 
   verticalMeterR.setLevel(processorRef.getRmsValue(1)); 
+  verticalMeterL.setPeak(processorRef.getPeakValue(0)); 
+  verticalMeterR.setPeak(processorRef.getPeakValue(1));
 
   verticalMeterL.repaint(); 
   verticalMeterR.repaint(); 
