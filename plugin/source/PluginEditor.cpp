@@ -39,7 +39,15 @@ void AudioPluginAudioProcessorEditor::timerCallback(){
 void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
 {
     // (Our component is opaque, so we must completely fill the background with a solid colour)
-    g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
+    ColourGradient background(
+        Colour(static_cast<juce::uint8>(120),static_cast<juce::uint8>(120),static_cast<juce::uint8>(150)),260.f,0.f,
+        Colour(static_cast<juce::uint8>(60),static_cast<juce::uint8>(60),static_cast<juce::uint8>(90)),400.f,400.f,
+        true 
+    ); 
+    
+    g.setGradientFill(background); 
+    g.fillAll(); 
 
     g.setColour (juce::Colours::lightgreen);
     g.setFont (15.0f);
