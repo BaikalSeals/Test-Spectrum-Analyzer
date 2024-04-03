@@ -5,6 +5,8 @@ project(BaikalSpectrumAnalyzer VERSION 0.1.0)
 
 juce_add_plugin(${PROJECT_NAME}
   COMPANY_NAME "Baikal Sound"
+  ICON_BIG "Assets/SpectralIcon.png"
+  ICON_SMALL "Assets/SpectralIcon.png"
   IS_SYNTH FALSE
   NEEDS_MIDI_INPUT FALSE
   NEED_MIDI_OUTPUT FALSE

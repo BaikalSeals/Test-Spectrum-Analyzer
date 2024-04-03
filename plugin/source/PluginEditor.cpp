@@ -33,6 +33,8 @@ void AudioPluginAudioProcessorEditor::timerCallback(){
 
   verticalMeterL.repaint(); 
   verticalMeterR.repaint(); 
+
+
 }
 
 //==============================================================================
@@ -41,8 +43,8 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
     // (Our component is opaque, so we must completely fill the background with a solid colour)
     //g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
     ColourGradient background(
-        Colour(static_cast<juce::uint8>(120),static_cast<juce::uint8>(120),static_cast<juce::uint8>(150)),260.f,0.f,
-        Colour(static_cast<juce::uint8>(60),static_cast<juce::uint8>(60),static_cast<juce::uint8>(90)),400.f,400.f,
+        Colour(static_cast<juce::uint8>(60),static_cast<juce::uint8>(60),static_cast<juce::uint8>(60)),260.f,0.f,
+        Colour(static_cast<juce::uint8>(20),static_cast<juce::uint8>(20),static_cast<juce::uint8>(20)),400.f,400.f,
         true 
     ); 
     
@@ -52,6 +54,11 @@ void AudioPluginAudioProcessorEditor::paint (juce::Graphics& g)
     g.setColour (juce::Colours::lightgreen);
     g.setFont (15.0f);
     g.drawFittedText ("Baikal Seals!\nThey're here!", getLocalBounds(), juce::Justification::centred, 1);
+
+        // g.strokePath(vmOutline, PathStrokeType(2.f));   
+        // DropShadow vmOutlineShadow(Colours::grey, 1, juce::Point(-3,3)); 
+        // vmOutlineShadow.drawForPath(g, vmOutline); 
+
 }
 
 void AudioPluginAudioProcessorEditor::resized()
