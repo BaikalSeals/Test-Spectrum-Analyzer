@@ -173,6 +173,7 @@ void AudioPluginAudioProcessor::setStateInformation (const void* data, int sizeI
 //
 //Gets Rms Value in order for the meter to display volume
 float AudioPluginAudioProcessor::getRmsValue(const int channel) const {
+  //Determines if it is channel 1 or 0 and returns the correct value
       jassert(channel == 0 || channel == 1); 
       if(channel == 0){
         return rmsLevelLeft; 
@@ -183,7 +184,9 @@ float AudioPluginAudioProcessor::getRmsValue(const int channel) const {
       return 0.f; 
   }
 
+//Gets true peak value for the meter to display true peak
 float AudioPluginAudioProcessor::getPeakValue(const int channel) const {
+  //Determines if it is channel 1 or 0 and returns the correct value
   jassert(channel == 0 || channel == 1); 
   if(channel == 0){
     return peakLeft; 
@@ -194,10 +197,66 @@ float AudioPluginAudioProcessor::getPeakValue(const int channel) const {
   return 0.f; 
 }
 
-// juce::AudioProcessorValueTreeState::ParameterLayout
-// AudioPluginAudioProcessor::createParameterLayout(){
+juce::AudioProcessorValueTreeState::ParameterLayout
+AudioPluginAudioProcessor::createParameterLayout(){
+  juce::AudioProcessorValueTreeState::ParameterLayout layout; 
 
-// }
+  //Here we are creating the lowcut parameter and setting up things such as skew factor
+  //we create a unique pointer of type juce audioparameter float
+  //next we set the variable of this to its name, parameter name, the normalisable range which
+  //sets the range of the hertz (in this case 20 to 20000) and then the value of steps when
+  //the slider is moved is 1. Next is the skew factor. The closer the skew factor to 0, the 
+  //more of the mouse movements are covering the lower part of the hertz range. Then we have
+  //the default value at 20 since we do not want the parameter to do anything unless it is moved. 
+
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "LowCut Freq", "Lowcut Freq", juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),20.f)); 
+
+  //We do all of what did above but for all the other parameters
+  //The high cut
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "HighCut Freq", "Highcut Freq", juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),20000.f)); 
+
+  //EQ nodes (three parts each)
+  //EQ node 1: 
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "Peak1 Freq", "Peak1 Freq", juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),750.f)); 
+
+  //Do not mess up this one unless you want your eardrums blown out. Ensure the rnage is only from
+  //-24 to 24 on this one
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "Peak1 Gain", "Peak1 Gain", juce::NormalisableRange<float>(-24.f, 24.f, 0.1f, 1.f), 0.f)); 
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "Peak1 Quality", "Peak1 Quality", juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f),1.f)); 
+
+  //EQ node 2: 
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "Peak2 Freq", "Peak2 Freq", juce::NormalisableRange<float>(20.f, 20000.f, 1.f, 1.f),2750.f)); 
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "Peak2 Gain", "Peak2 Gain", juce::NormalisableRange<float>(-24.f, 24.f, 0.1f, 1.f), 0.f)); 
+
+  layout.add(std::make_unique<juce::AudioParameterFloat>(
+    "Peak2 Quality", "Peak2 Quality", juce::NormalisableRange<float>(0.1f, 10.f, 0.05f, 1.f),1.f)); 
+
+  //This part is for creating the choices for the low and high cut (how hard of a cut)
+  juce::StringArray stringArray; 
+  for(int i = 0; i<4; i++){
+    juce::String str;
+    str << (12+i*12); 
+    str << " db/Oct"; 
+    stringArray.add(str); 
+  }
+
+  layout.add(std::make_unique<juce::AudioParameterChoice>(
+    "LowCut Slope", "LowCut Slope", stringArray, 0));
+  layout.add(std::make_unique<juce::AudioParameterChoice>(
+    "HighCut Slope", "HighCut Slope", stringArray, 0));
+
+  return layout; 
+}
 
 
 //==============================================================================

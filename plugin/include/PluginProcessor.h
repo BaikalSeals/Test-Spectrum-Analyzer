@@ -53,10 +53,10 @@ public:
     float getPeakValue(const int channel) const; 
 
     //This syncs parameters between the knobs on the gui and the parameters on the dsp
-    // static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(); 
+    static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(); 
 
-    // juce::AudioProcessorValueTreeState apvts {
-    //     *this, nullptr, "Parameters", createParameterLayout()}; 
+    juce::AudioProcessorValueTreeState apvts {
+        *this, nullptr, "Parameters", createParameterLayout()}; 
 
     
 
