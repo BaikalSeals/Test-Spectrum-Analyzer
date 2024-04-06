@@ -3,6 +3,7 @@
  
 #include <JuceHeader.h>
 
+
 //==============================================================================
 class AudioPluginAudioProcessor  : public juce::AudioProcessor
 {
@@ -65,6 +66,25 @@ private:
     float rmsLevelLeft, rmsLevelRight; 
     //values for peak value 
     float peakLeft, peakRight; 
+
+    //Aliases created so that we do not have to deal with writing out all the
+    //nested namespaces
+    using Filter = juce::dsp::IIR::Filter<float>; 
+
+    //The IIR filter class has a response of 12db when it is configured as low or
+    //high pass filter. In order to get 48 db per octave we will need 4 of these filters.
+    //We can use 4 of these filters to pass through a processing chain in order to pass one
+    //context and have it run through 4 automatically. 
+    using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>; 
+
+    //This is a chain that represents the whole mono signal path. The first cutfilter is
+    //the low cut, then the Filter is 1st EQ (peak1), then the next filter is the 2nd EQ (peak2),
+    //and finally the last cutfilter is the highcut 
+    using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, Filter, CutFilter>; 
+
+    //In order to do stereo we need two instances of this mono chain
+    MonoChain leftChain, rightChain; 
+
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)

@@ -12,7 +12,7 @@ juce_add_plugin(${PROJECT_NAME}
   NEED_MIDI_OUTPUT FALSE
   PLUGIN_MANUFACTURER_CODE BAKL
   PLUGIN_CODE BEQT 
-  FORMATS VST3 Standalone
+  FORMATS VST3
   MICROPHONE_PERMISSION_ENABLED TRUE
   PRODUCT_NAME "Baikal Spectrum Analyzer"
 )
@@ -28,12 +28,12 @@ target_sources(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
   PRIVATE 
   include/
-  include/ 
 )
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     juce::juce_audio_utils
+    juce::juce_dsp
   PUBLIC
     juce::juce_recommended_config_flags
     juce::juce_recommended_lto_flags
