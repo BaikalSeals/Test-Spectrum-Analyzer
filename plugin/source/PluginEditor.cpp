@@ -78,7 +78,7 @@ audioPluginComponent(p) {
         //Sets a fixed aspect ratio
         constraints->setFixedAspectRatio(static_cast<double>(originalWidth)/static_cast<double> (originalHeight));
         //Sets minimum size in terms of original sizes and then maximum size in terms of original size
-        constraints->setSizeLimits(originalWidth/4, originalHeight/4, originalWidth*4, originalHeight*4); 
+        constraints->setSizeLimits(originalWidth/2, originalHeight/2, originalWidth*4, originalHeight*4); 
     }
     
     //Now we need to set resizable to true

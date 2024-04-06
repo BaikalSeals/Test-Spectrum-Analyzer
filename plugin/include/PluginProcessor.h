@@ -44,13 +44,20 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     //Added==========================================
-    //
-    //
+    
+    
     //rms values for the volume meter
     float getRmsValue(const int channel) const;
     
     //peak values for the volume meter 
     float getPeakValue(const int channel) const; 
+
+    //This syncs parameters between the knobs on the gui and the parameters on the dsp
+    // static juce::AudioProcessorValueTreeState::ParameterLayout createParameterLayout(); 
+
+    // juce::AudioProcessorValueTreeState apvts {
+    //     *this, nullptr, "Parameters", createParameterLayout()}; 
+
     
 
 private:
