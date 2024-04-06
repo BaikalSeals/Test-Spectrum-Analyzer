@@ -19,24 +19,24 @@ namespace Gui
         g.fillRoundedRectangle(bounds, 5.f); 
 
         //Now these scales are created that mark out the volume levels 
-        const auto scaled0 = jmap(0.f, -60.f, 6.f, 0.f, static_cast<float>(getHeight()-1)); 
-        const auto scaled12 = jmap(-12.f, -60.f, 6.f, 0.f, static_cast<float>(getHeight()-1)); 
-        const auto scaled24 = jmap(-24.f, -60.f, 6.f, 0.f, static_cast<float>(getHeight()-1)); 
-        const auto scaled36 = jmap(-36.f, -60.f, 6.f, 0.f, static_cast<float>(getHeight()-1)); 
-        const auto scaled48 = jmap(-48.f, -60.f, 6.f, 0.f, static_cast<float>(getHeight()-1)); 
+        const auto scaled0 = jmap(0.f, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
+        const auto scaled12 = jmap(-12.f, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
+        const auto scaled24 = jmap(-24.f, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
+        const auto scaled36 = jmap(-36.f, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
+        const auto scaled48 = jmap(-48.f, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
         //These scales generate the movement for the volume/peak meters
-        const auto scaledX1 = jmap(peak, -60.f, 6.f, 0.f, static_cast<float>(getHeight()-1)); 
-        const auto scaledX2 = jmap(level, -60.f, 6.f, 0.f, static_cast<float>(getHeight()-1)); 
+        const auto scaledX1 = jmap(peak, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
+        const auto scaledX2 = jmap(level, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
 
         const auto scalecolor = jmap(-6.f, -60.f, 6.f, 0.f, 1.f); 
         //Creation of an shape in order to create the meters 
         //This first meter is the peak meter and we create this first since it will be 
         //behind the volume meter
         juce::Path pmeter; 
-        pmeter.startNewSubPath(2,199); 
+        pmeter.startNewSubPath(2,198); 
         pmeter.lineTo(2,(200-scaledX1)); 
         pmeter.lineTo(13,(200-scaledX1)); 
-        pmeter.lineTo(13,199); 
+        pmeter.lineTo(13,198); 
         pmeter.closeSubPath(); 
         //fill must be created in order to set the fill type as a gradient 
         //This allows us to use fillPath for the gradient 
@@ -60,10 +60,10 @@ namespace Gui
 
         //This section is for the volume, same steps and process
         Path vmeter; 
-        vmeter.startNewSubPath(2,199); 
+        vmeter.startNewSubPath(2,198); 
         vmeter.lineTo(2,(200-scaledX2)); 
         vmeter.lineTo(13,(200-scaledX2)); 
-        vmeter.lineTo(13,199); 
+        vmeter.lineTo(13,198); 
         vmeter.closeSubPath(); 
 
         sealTealGradient = ColourGradient::vertical(

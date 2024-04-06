@@ -146,9 +146,11 @@ bool AudioPluginAudioProcessor::hasEditor() const
     return true; // (change this to false if you choose to not supply an editor)
 }
 
+
+
 juce::AudioProcessorEditor* AudioPluginAudioProcessor::createEditor()
 {
-    return new AudioPluginAudioProcessorEditor (*this);
+    return new WrappedAudioPluginAudioProcessorEditor (*this);
 }
 
 //==============================================================================
@@ -191,10 +193,6 @@ float AudioPluginAudioProcessor::getPeakValue(const int channel) const {
   }
   return 0.f; 
 }
-//
-
-
-
 
 
 
