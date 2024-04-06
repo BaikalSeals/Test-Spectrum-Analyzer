@@ -3,6 +3,23 @@
  
 #include <JuceHeader.h>
 
+enum Slope{
+    Slope12,
+    Slope24,
+    Slope36,
+    Slope48
+};
+
+//We want to extract parameters from the audio processor value tree state
+//A data structure is needed to keep this in order
+struct ChainSettings{
+    float peak1Freq {0}, peak1GainInDecibels{0}, peak1Quality {1.f}; 
+    float peak2Freq {0}, peak2GainInDecibels{0}, peak2Quality {1.f}; 
+    float lowCutFreq {0}, highCutFreq {0}; 
+    Slope lowCutSlope {Slope::Slope12}, highCutSlope {Slope::Slope12};
+}; 
+
+ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts); 
 
 //==============================================================================
 class AudioPluginAudioProcessor  : public juce::AudioProcessor
@@ -85,6 +102,13 @@ private:
     //In order to do stereo we need two instances of this mono chain
     MonoChain leftChain, rightChain; 
 
+    //enum for chain positions
+    enum ChainPositions{
+        LowCut,
+        Peak1,
+        Peak2,
+        HighCut
+    }; 
     
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
