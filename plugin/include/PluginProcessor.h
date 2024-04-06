@@ -110,6 +110,15 @@ private:
         HighCut
     }; 
     
+    //Writing out functions for the filters
+    //This will allow for more easily implementing updates to the peak filters
+    void updatePeakFilter(const ChainSettings& chainSettings); 
+
+    //Allows for easier updating of coefficients
+    using Coefficients = Filter::CoefficientsPtr; 
+    static void updateCoefficients(Coefficients& old, const Coefficients& replacements); 
+
+
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
 };

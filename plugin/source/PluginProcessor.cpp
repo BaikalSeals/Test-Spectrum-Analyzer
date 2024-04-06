@@ -107,24 +107,7 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 
   auto chainSettings = getChainSettings(apvts); 
 
-  auto peak1Coefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-    sampleRate, chainSettings.peak1Freq, chainSettings.peak1Quality,
-    juce::Decibels::decibelsToGain(chainSettings.peak1GainInDecibels)); 
-
-  auto peak2Coefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-    sampleRate, chainSettings.peak2Freq, chainSettings.peak2Quality,
-    juce::Decibels::decibelsToGain(chainSettings.peak2GainInDecibels)); 
-
-  //Possible Error here. I went ahead and removed the * at the beginning of the line
-  //and at the beginning of the ending variable. I looked into it and this should 
-  //work and be better considering that JUCE has been updated so that you do not have
-  //do allocate on the heap for coefficient objects during the audio callback. 
-  //This means I have written it so that it is not dereferencing since it should no
-  //longer have to do that. 
-  leftChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients;   //<==== POSSIBLE ERROR
-  rightChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients; 
-  leftChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
-  rightChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
+  updatePeakFilter(chainSettings); 
 
   //Setting up the low and high cut filters
   auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
@@ -283,24 +266,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
   auto chainSettings = getChainSettings(apvts); 
 
-  auto peak1Coefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-    getSampleRate(), chainSettings.peak1Freq, chainSettings.peak1Quality,
-    juce::Decibels::decibelsToGain(chainSettings.peak1GainInDecibels)); 
-
-  auto peak2Coefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
-    getSampleRate(), chainSettings.peak2Freq, chainSettings.peak2Quality,
-    juce::Decibels::decibelsToGain(chainSettings.peak2GainInDecibels)); 
-
-  //Possible Error here. I went ahead and removed the * at the beginning of the line
-  //and at the beginning of the ending variable. I looked into it and this should 
-  //work and be better considering that JUCE has been updated so that you do not have
-  //do allocate on the heap for coefficient objects during the audio callback. 
-  //This means I have written it so that it is not dereferencing since it should no
-  //longer have to do that. 
-  leftChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients;   //<==== POSSIBLE ERROR
-  rightChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients; 
-  leftChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
-  rightChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
+  updatePeakFilter(chainSettings); 
 
   auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
     chainSettings.lowCutFreq, getSampleRate(), (chainSettings.lowCutSlope +1)*2
@@ -458,6 +424,40 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts){
   settings.peak2Quality = apvts.getRawParameterValue("Peak2 Quality")->load(); 
 
   return settings; 
+}
+
+//Implementation of processor function
+void AudioPluginAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings){
+  auto peak1Coefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
+    getSampleRate(), chainSettings.peak1Freq, chainSettings.peak1Quality,
+    juce::Decibels::decibelsToGain(chainSettings.peak1GainInDecibels)); 
+
+  auto peak2Coefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
+    getSampleRate(), chainSettings.peak2Freq, chainSettings.peak2Quality,
+    juce::Decibels::decibelsToGain(chainSettings.peak2GainInDecibels)); 
+
+  //Possible Error here. I went ahead and removed the * at the beginning of the line
+  //and at the beginning of the ending variable. I looked into it and this should 
+  //work and be better considering that JUCE has been updated so that you do not have
+  //do allocate on the heap for coefficient objects during the audio callback. 
+  //This means I have written it so that it is not dereferencing since it should no
+  //longer have to do that. 
+  leftChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients;   //<==== POSSIBLE ERROR
+  rightChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients; 
+  leftChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
+  rightChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
+
+  updateCoefficients(leftChain.get<ChainPositions::Peak1>().coefficients, peak1Coefficients); 
+  updateCoefficients(rightChain.get<ChainPositions::Peak1>().coefficients, peak1Coefficients); 
+
+  updateCoefficients(leftChain.get<ChainPositions::Peak2>().coefficients, peak2Coefficients); 
+  updateCoefficients(rightChain.get<ChainPositions::Peak2>().coefficients, peak2Coefficients);
+
+}
+
+//Implementation of update coefficients function
+void AudioPluginAudioProcessor::updateCoefficients(Coefficients &old, const Coefficients &replacements){
+  *old = *replacements;
 }
 
 juce::AudioProcessorValueTreeState::ParameterLayout
