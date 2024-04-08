@@ -114,10 +114,6 @@ private:
     //This will allow for more easily implementing updates to the peak filters
     void updatePeakFilter(const ChainSettings& chainSettings); 
 
-    //Allows for easier updating of coefficients
-    using Coefficients = Filter::CoefficientsPtr; 
-    static void updateCoefficients(Coefficients& old, const Coefficients& replacements); 
-
     template<typename ChainType, typename CoefficientType>
     void updateCutFilter(ChainType& leftLowCut, 
     const CoefficientType& cutCoefficients, 
@@ -130,37 +126,43 @@ private:
 
         switch(lowCutSlope){
             case Slope12:
-            *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+            leftLowCut.template get<0>().coefficients = cutCoefficients[0];
             leftLowCut.template setBypassed<0>(false); 
             break; 
             case Slope24:
-            *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+            leftLowCut.template get<0>().coefficients = cutCoefficients[0];
             leftLowCut.template setBypassed<0>(false); 
-            *leftLowCut.template get<1>().coefficients = *cutCoefficients[1];
+            leftLowCut.template get<1>().coefficients = cutCoefficients[1];
             leftLowCut.template setBypassed<1>(false); 
             break;
             case Slope36:
-            *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+            leftLowCut.template get<0>().coefficients = cutCoefficients[0];
             leftLowCut.template setBypassed<0>(false); 
-            *leftLowCut.template get<1>().coefficients = *cutCoefficients[1];
+            leftLowCut.template get<1>().coefficients = cutCoefficients[1];
             leftLowCut.template setBypassed<1>(false); 
-            *leftLowCut.template get<2>().coefficients = *cutCoefficients[2];
+            leftLowCut.template get<2>().coefficients = cutCoefficients[2];
             leftLowCut.template setBypassed<2>(false); 
             break;
             case Slope48:
-            *leftLowCut.template get<0>().coefficients = *cutCoefficients[0];
+            leftLowCut.template get<0>().coefficients = cutCoefficients[0];
             leftLowCut.template setBypassed<0>(false); 
-            *leftLowCut.template get<1>().coefficients = *cutCoefficients[1];
+            leftLowCut.template get<1>().coefficients = cutCoefficients[1];
             leftLowCut.template setBypassed<1>(false); 
-            *leftLowCut.template get<2>().coefficients = *cutCoefficients[2];
+            leftLowCut.template get<2>().coefficients = cutCoefficients[2];
             leftLowCut.template setBypassed<2>(false); 
-            *leftLowCut.template get<3>().coefficients = *cutCoefficients[3];
+            leftLowCut.template get<3>().coefficients = cutCoefficients[3];
             leftLowCut.template setBypassed<3>(false); 
             break; 
         }
     }
 
 
+    //Set here as a way to update all filters at once
+    //I could put this in the process block to cut down on reused code, but
+    //since this is a test plugin to learn c++, juce and cmake, I want to leave
+    //it as is to be able to go back and easily reference what it was I was doing
+    //This function is here for being able to set the value tree state
+    void updateFilters();
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginAudioProcessor)
 };

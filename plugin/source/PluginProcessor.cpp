@@ -109,16 +109,29 @@ void AudioPluginAudioProcessor::prepareToPlay (double sampleRate, int samplesPer
 
   updatePeakFilter(chainSettings); 
 
-  //Setting up the low and high cut filters
-  auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
+  //Setting up the low and high cut filter coefficients
+  //These coefficients are set by determining the slope enum
+  auto lowcutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
     chainSettings.lowCutFreq, sampleRate, (chainSettings.lowCutSlope +1)*2
   ); 
 
+  auto highcutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
+    chainSettings.lowCutFreq, sampleRate, (chainSettings.lowCutSlope +1)*2
+  ); 
+
+  //First a variable telling what filter the chain is set to, in this case low cut and high cut
+  //We set the variable to then be used in the updateCutFilter function 
   auto& leftLowCut = leftChain.get<ChainPositions::LowCut>(); 
-  updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(leftLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
 
   auto& rightLowCut = rightChain.get<ChainPositions::LowCut>(); 
-  updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(rightLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
+
+  auto& leftHighCut = leftChain.get<ChainPositions::HighCut>(); 
+  updateCutFilter(leftHighCut, highcutCoefficients, chainSettings.highCutSlope); 
+
+  auto& rightHighCut = rightChain.get<ChainPositions::HighCut>(); 
+  updateCutFilter(rightHighCut, highcutCoefficients, chainSettings.highCutSlope); 
 }
 
 void AudioPluginAudioProcessor::releaseResources()
@@ -166,7 +179,7 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
   peakLeft = Decibels::gainToDecibels(buffer.getMagnitude(0, 0, buffer.getNumSamples())); 
   peakRight = Decibels::gainToDecibels(buffer.getMagnitude(1, 0, buffer.getNumSamples())); 
  
-  //This is necessary set up for processing
+  //This is necessary set up for manipulation of the audio signal 
   auto totalNumInputChannels = getTotalNumInputChannels(); 
   auto totalNumOutputChannels = getTotalNumOutputChannels(); 
 
@@ -196,15 +209,26 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
   updatePeakFilter(chainSettings); 
 
   
-  auto cutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
+  auto lowcutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
     chainSettings.lowCutFreq, getSampleRate(), (chainSettings.lowCutSlope +1)*2
   ); 
 
+  auto highcutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
+    chainSettings.highCutFreq, getSampleRate(), (chainSettings.highCutSlope + 1)*2
+  ); 
+
   auto& leftLowCut = leftChain.get<ChainPositions::LowCut>(); 
-  updateCutFilter(leftLowCut, cutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(leftLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
 
   auto& rightLowCut = rightChain.get<ChainPositions::LowCut>(); 
-  updateCutFilter(rightLowCut, cutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(rightLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
+
+  auto& leftHighCut = leftChain.get<ChainPositions::HighCut>(); 
+  updateCutFilter(leftHighCut, highcutCoefficients, chainSettings.highCutSlope); 
+
+  auto& rightHighCut = rightChain.get<ChainPositions::HighCut>(); 
+  updateCutFilter(rightHighCut, highcutCoefficients, chainSettings.highCutSlope); 
+
 
 }
 
@@ -228,6 +252,13 @@ void AudioPluginAudioProcessor::getStateInformation (juce::MemoryBlock& destData
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+
+    //Here we get the state information for the filters (highcut, lowcut,peak)
+    //If there is info saved, then it will set the parameters to how they were
+    //last time the plugin was opened
+    juce::MemoryOutputStream mos(destData, true); 
+    apvts.state.writeToStream(mos); 
+
     juce::ignoreUnused (destData);
 }
 
@@ -235,6 +266,13 @@ void AudioPluginAudioProcessor::setStateInformation (const void* data, int sizeI
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+
+    auto tree = juce::ValueTree::readFromData(data, sizeInBytes); 
+    if(tree.isValid()){
+      apvts.replaceState(tree); 
+      updateFilters(); 
+    }
+
     juce::ignoreUnused (data, sizeInBytes);
 }
 
@@ -286,6 +324,8 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts){
 
 //Implementation of processor function
 void AudioPluginAudioProcessor::updatePeakFilter(const ChainSettings &chainSettings){
+  //First the coefficients are set using the peak gain and quality numbers found
+  //in the chain settings variable. 
   auto peak1Coefficients = juce::dsp::IIR::Coefficients<float>::makePeakFilter(
     getSampleRate(), chainSettings.peak1Freq, chainSettings.peak1Quality,
     juce::Decibels::decibelsToGain(chainSettings.peak1GainInDecibels)); 
@@ -300,23 +340,16 @@ void AudioPluginAudioProcessor::updatePeakFilter(const ChainSettings &chainSetti
   //do allocate on the heap for coefficient objects during the audio callback. 
   //This means I have written it so that it is not dereferencing since it should no
   //longer have to do that. 
+
+  //Now the left chain and right chain peak coefficients are set
+  //We have to set this for both left and right since the chain is in mono otherwise
+  //note that chain settings only applies to mono
   leftChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients;   //<==== POSSIBLE ERROR
   rightChain.get<ChainPositions::Peak1>().coefficients = peak1Coefficients; 
   leftChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
   rightChain.get<ChainPositions::Peak2>().coefficients = peak2Coefficients; 
-
-  updateCoefficients(leftChain.get<ChainPositions::Peak1>().coefficients, peak1Coefficients); 
-  updateCoefficients(rightChain.get<ChainPositions::Peak1>().coefficients, peak1Coefficients); 
-
-  updateCoefficients(leftChain.get<ChainPositions::Peak2>().coefficients, peak2Coefficients); 
-  updateCoefficients(rightChain.get<ChainPositions::Peak2>().coefficients, peak2Coefficients);
-
 }
 
-//Implementation of update coefficients function
-void AudioPluginAudioProcessor::updateCoefficients(Coefficients &old, const Coefficients &replacements){
-  *old = *replacements;
-}
 
 juce::AudioProcessorValueTreeState::ParameterLayout
 AudioPluginAudioProcessor::createParameterLayout(){
@@ -377,6 +410,27 @@ AudioPluginAudioProcessor::createParameterLayout(){
     "HighCut Slope", "HighCut Slope", stringArray, 0));
 
   return layout; 
+}
+
+void AudioPluginAudioProcessor::updateFilters(){
+  auto chainSettings = getChainSettings(apvts); 
+
+  updatePeakFilter(chainSettings); 
+  auto& leftHighCut = leftChain.get<ChainPositions::HighCut>(); 
+  auto& leftLowCut = leftChain.get<ChainPositions::HighCut>(); 
+  auto& rightHighCut = rightChain.get<ChainPositions::HighCut>(); 
+  auto& rightLowCut = rightChain.get<ChainPositions::HighCut>(); 
+
+  auto lowcutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
+    chainSettings.lowCutFreq, getSampleRate(), 2*(chainSettings.lowCutSlope +1)); 
+
+  auto highcutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
+    chainSettings.highCutFreq, getSampleRate(), 2*(chainSettings.highCutSlope +1)); 
+
+  updateCutFilter(leftLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(leftHighCut, lowcutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(rightLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(rightHighCut, lowcutCoefficients, chainSettings.lowCutSlope); 
 }
 
 
