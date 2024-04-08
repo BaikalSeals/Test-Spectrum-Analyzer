@@ -11,6 +11,10 @@ AudioPluginComponent::AudioPluginComponent (AudioPluginAudioProcessor& p) : proc
     // editor's size to whatever you need it to be.
     addAndMakeVisible(verticalMeterL); 
     addAndMakeVisible(verticalMeterR);
+    //The knob is set to be made visible 
+    //(Note that you cannot set bounds at resize unless this is written here)
+    addAndMakeVisible(knob1); 
+    addAndMakeVisible(knob2); 
 
     //Here we have startTimer in the constructor 
     //startTimer() accepts time in ms and startTimerHz accepts inverse of that 
@@ -29,6 +33,8 @@ void AudioPluginComponent::timerCallback(){
   verticalMeterR.setLevel(processorRef.getRmsValue(1)); 
   verticalMeterL.setPeak(processorRef.getPeakValue(0)); 
   verticalMeterR.setPeak(processorRef.getPeakValue(1));
+
+
 
   verticalMeterL.repaint(); 
   verticalMeterR.repaint(); 
@@ -64,6 +70,17 @@ void AudioPluginComponent::resized()
     //the width and then the last argument is the height
     verticalMeterL.setBounds(30, 190, 15, 200); 
     verticalMeterR.setBounds(10,190, 15, 200); 
+
+    //First we set the Custom Look and feel object to green indicated by 0
+    green.setLook(0); 
+    blue.setLook(1); 
+    //Next the knob1 is set to the green object (which in this case is green)
+    knob1.setLook(green); 
+    knob2.setLook(blue); 
+    //Next the bounds are set
+    knob1.setBounds(20,20,80,80);
+    knob2.setBounds(100,200,80,80);
+
 }
 
 //Wrapper constructor

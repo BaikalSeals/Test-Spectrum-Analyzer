@@ -17,6 +17,7 @@ CPMAddPackage(
 
 if(MSVC)
   add_compile_options(/Wall /WX)
+  add_compile_options(/wd5045)
 else()
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()

@@ -242,8 +242,8 @@ bool AudioPluginAudioProcessor::hasEditor() const
 
 juce::AudioProcessorEditor* AudioPluginAudioProcessor::createEditor()
 {
-  //  return new WrappedAudioPluginAudioProcessorEditor (*this);
-  return new juce::GenericAudioProcessorEditor(*this); 
+    return new WrappedAudioPluginAudioProcessorEditor (*this);
+  //return new juce::GenericAudioProcessorEditor(*this); 
 }
 
 //==============================================================================

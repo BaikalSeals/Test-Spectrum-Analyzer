@@ -2,6 +2,9 @@
 #include <JuceHeader.h>
 #include "PluginProcessor.h"
 #include "Components/VerticalMeter.h"
+#include "Components/KnobLook.h"
+//#include "../Assets/BinaryData.h"
+#include "Components/Knobs.h"
 
 //==============================================================================
 //In order for the wrapper to work the class originally was structured as 
@@ -27,7 +30,11 @@ private:
     // access the processor object that created it.
     AudioPluginAudioProcessor& processorRef;
 
-    Gui::VerticalMeter verticalMeterL, verticalMeterR;  
+    Gui::VerticalMeter verticalMeterL, verticalMeterR;
+    TTCOKnob knob1; 
+    TTCOLook green;
+    TTCOKnob knob2; 
+    TTCOLook blue; 
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginComponent)
 };
