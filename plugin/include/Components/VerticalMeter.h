@@ -29,14 +29,18 @@ namespace Gui
         const auto scaledX2 = jmap(level, -60.f, 6.f, 2.f, static_cast<float>(getHeight()-2)); 
 
         const auto scalecolor = jmap(-6.f, -60.f, 6.f, 0.f, 1.f); 
+
+        float drawWidth = static_cast<float>(getWidth()-2); 
+        float drawHeight = static_cast<float>(getHeight()-3); 
+
         //Creation of an shape in order to create the meters 
         //This first meter is the peak meter and we create this first since it will be 
         //behind the volume meter
         juce::Path pmeter; 
-        pmeter.startNewSubPath(2,198); 
-        pmeter.lineTo(2,(200-scaledX1)); 
-        pmeter.lineTo(13,(200-scaledX1)); 
-        pmeter.lineTo(13,198); 
+        pmeter.startNewSubPath(2,drawHeight); 
+        pmeter.lineTo(2,static_cast<float>(getHeight()-scaledX1)); 
+        pmeter.lineTo(drawWidth,static_cast<float>(getHeight()-scaledX1)); 
+        pmeter.lineTo(drawWidth,drawHeight); 
         pmeter.closeSubPath(); 
         //fill must be created in order to set the fill type as a gradient 
         //This allows us to use fillPath for the gradient 
@@ -45,8 +49,8 @@ namespace Gui
         //Setting up the gradient color and in what direction it goes
         ColourGradient sealTealGradient; 
         sealTealGradient = ColourGradient::vertical(
-            Colour(static_cast<juce::uint8>(255), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.3f), 1,
-            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.2f), 199
+            Colour(static_cast<juce::uint8>(255), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.3f), 3,
+            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.2f), drawHeight
           );
         //Adds middle color (teal)
         sealTealGradient.addColour((1-scalecolor),Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), static_cast<juce::uint8>(222), 0.2f)); 
@@ -58,17 +62,18 @@ namespace Gui
         //Fill the path (color (in this case gradient) is already set)
         g.fillPath(pmeter); 
 
+
         //This section is for the volume, same steps and process
         Path vmeter; 
-        vmeter.startNewSubPath(2,198); 
-        vmeter.lineTo(2,(200-scaledX2)); 
-        vmeter.lineTo(13,(200-scaledX2)); 
-        vmeter.lineTo(13,198); 
+        vmeter.startNewSubPath(2,drawHeight); 
+        vmeter.lineTo(2,static_cast<float>(getHeight()-scaledX2)); 
+        vmeter.lineTo(drawWidth,static_cast<float>(getHeight()-scaledX2)); 
+        vmeter.lineTo(drawWidth,drawHeight); 
         vmeter.closeSubPath(); 
 
         sealTealGradient = ColourGradient::vertical(
-            Colour(static_cast<juce::uint8>(255), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.6f), 1,
-            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.5f), 199
+            Colour(static_cast<juce::uint8>(255), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.6f), 3,
+            Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), 0.5f), drawHeight
           );
         sealTealGradient.addColour((1-scalecolor),Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(255), static_cast<juce::uint8>(222), 0.5f)); 
 
@@ -81,24 +86,24 @@ namespace Gui
         //Now creating the markings of the meter that list out the dbs 
         g.setColour(Colour(static_cast<juce::uint8>(0), static_cast<juce::uint8>(0), static_cast<juce::uint8>(0),0.7f)); 
         Path zeroLine; 
-        zeroLine.startNewSubPath(2,(200-scaled0));
-        zeroLine.lineTo(13,(200-scaled0)); 
+        zeroLine.startNewSubPath(2,(getHeight()-scaled0));
+        zeroLine.lineTo(drawWidth,(getHeight()-scaled0)); 
         g.strokePath(zeroLine, PathStrokeType(1.5f)); 
 
-        zeroLine.startNewSubPath(2,(200-scaled12));
-        zeroLine.lineTo(13,(200-scaled12)); 
+        zeroLine.startNewSubPath(2,(getHeight()-scaled12));
+        zeroLine.lineTo(drawWidth,(getHeight()-scaled12)); 
         g.strokePath(zeroLine, PathStrokeType(0.5f)); 
 
-        zeroLine.startNewSubPath(2,(200-scaled24));
-        zeroLine.lineTo(13,(200-scaled24)); 
+        zeroLine.startNewSubPath(2,(getHeight()-scaled24));
+        zeroLine.lineTo(drawWidth,(getHeight()-scaled24)); 
         g.strokePath(zeroLine, PathStrokeType(0.5f)); 
 
-        zeroLine.startNewSubPath(2,(200-scaled36));
-        zeroLine.lineTo(13,(200-scaled36)); 
+        zeroLine.startNewSubPath(2,(getHeight()-scaled36));
+        zeroLine.lineTo(drawWidth,(getHeight()-scaled36)); 
         g.strokePath(zeroLine, PathStrokeType(0.5f)); 
 
-        zeroLine.startNewSubPath(2,(200-scaled48));
-        zeroLine.lineTo(13,(200-scaled48)); 
+        zeroLine.startNewSubPath(2,(getHeight()-scaled48));
+        zeroLine.lineTo(drawWidth,(getHeight()-scaled48)); 
         g.strokePath(zeroLine, PathStrokeType(0.5f)); 
 
       }

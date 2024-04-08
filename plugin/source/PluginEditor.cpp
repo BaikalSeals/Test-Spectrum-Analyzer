@@ -68,8 +68,8 @@ void AudioPluginComponent::resized()
     //
     //for setbounds the first two arguments are the x and y pixel position and the 3rd argument is 
     //the width and then the last argument is the height
-    verticalMeterL.setBounds(30, 190, 15, 200); 
-    verticalMeterR.setBounds(10,190, 15, 200); 
+    verticalMeterL.setBounds(30, 10, 15, 380); 
+    verticalMeterR.setBounds(10,10, 15, 380); 
 
     //First we set the Custom Look and feel object to green indicated by 0
     green.setLook(0); 
@@ -78,8 +78,8 @@ void AudioPluginComponent::resized()
     knob1.setLook(green); 
     knob2.setLook(blue); 
     //Next the bounds are set
-    knob1.setBounds(20,20,80,80);
-    knob2.setBounds(100,200,80,80);
+    knob1.setBounds(70,300,60,60);
+    knob2.setBounds(140,300,60,60);
 
 }
 
