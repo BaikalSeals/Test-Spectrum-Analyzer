@@ -31,10 +31,37 @@ private:
     AudioPluginAudioProcessor& processorRef;
 
     Gui::VerticalMeter verticalMeterL, verticalMeterR;
-    TTCOKnob knob1; 
+    //Creating the two look and feel of the knobs
     TTCOLook green;
-    TTCOKnob knob2; 
     TTCOLook blue; 
+
+    //Creating the knobs
+    TTCOKnob highCutFreq,
+    lowCutFreq,
+    lowCutShelf, 
+    highCutShelf, 
+    EQ1Freq,
+    EQ1Gain, 
+    EQ1Quality, 
+    EQ2Freq,
+    EQ2Gain, 
+    EQ2Quality; 
+
+    //
+    using APVTS = juce::AudioProcessorValueTreeState; 
+    using Attachment = APVTS::SliderAttachment; 
+
+    Attachment highCutFreqAttachment,
+    lowCutFreqAttachment,
+    lowCutShelfAttachment, 
+    highCutShelfAttachment, 
+    EQ1FreqAttachment,
+    EQ1GainAttachment, 
+    EQ1QualityAttachment, 
+    EQ2FreqAttachment,
+    EQ2GainAttachment, 
+    EQ2QualityAttachment; 
+
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioPluginComponent)
 };

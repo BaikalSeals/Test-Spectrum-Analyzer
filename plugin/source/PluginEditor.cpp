@@ -4,7 +4,18 @@
 
 
 //==============================================================================
-AudioPluginComponent::AudioPluginComponent (AudioPluginAudioProcessor& p) : processorRef (p)
+AudioPluginComponent::AudioPluginComponent (AudioPluginAudioProcessor& p) : processorRef (p), 
+//We now need to set up the "sliders" (in this case knobs), for take the input from the processor
+highCutFreqAttachment(processorRef.apvts, "HighCut Freq", highCutFreq),
+highCutShelfAttachment(processorRef.apvts, "HighCut Slope", highCutShelf), 
+lowCutFreqAttachment(processorRef.apvts, "LowCut Freq", lowCutFreq), 
+lowCutShelfAttachment(processorRef.apvts, "LowCut Slope", lowCutShelf), 
+EQ1FreqAttachment(processorRef.apvts, "Peak1 Freq", EQ1Freq), 
+EQ1GainAttachment(processorRef.apvts, "Peak1 Gain", EQ1Gain), 
+EQ1QualityAttachment(processorRef.apvts, "Peak1 Quality", EQ1Quality),
+EQ2FreqAttachment(processorRef.apvts, "Peak2 Freq", EQ2Freq), 
+EQ2GainAttachment(processorRef.apvts, "Peak2 Gain", EQ2Gain), 
+EQ2QualityAttachment(processorRef.apvts, "Peak2 Quality", EQ2Quality)
 {
     juce::ignoreUnused (processorRef);
     // Make sure that before the constructor has finished, you've set the
@@ -13,8 +24,17 @@ AudioPluginComponent::AudioPluginComponent (AudioPluginAudioProcessor& p) : proc
     addAndMakeVisible(verticalMeterR);
     //The knob is set to be made visible 
     //(Note that you cannot set bounds at resize unless this is written here)
-    addAndMakeVisible(knob1); 
-    addAndMakeVisible(knob2); 
+    addAndMakeVisible(lowCutFreq); 
+    addAndMakeVisible(lowCutShelf); 
+    addAndMakeVisible(highCutFreq); 
+    addAndMakeVisible(highCutShelf);
+    addAndMakeVisible(EQ1Freq); 
+    addAndMakeVisible(EQ1Gain); 
+    addAndMakeVisible(EQ1Quality); 
+    addAndMakeVisible(EQ2Freq); 
+    addAndMakeVisible(EQ2Gain); 
+    addAndMakeVisible(EQ2Quality); 
+
 
     //Here we have startTimer in the constructor 
     //startTimer() accepts time in ms and startTimerHz accepts inverse of that 
@@ -75,11 +95,31 @@ void AudioPluginComponent::resized()
     green.setLook(0); 
     blue.setLook(1); 
     //Next the knob1 is set to the green object (which in this case is green)
-    knob1.setLook(green); 
-    knob2.setLook(blue); 
+    highCutFreq.setLook(green); 
+    highCutShelf.setLook(green); 
+    lowCutFreq.setLook(blue); 
+    lowCutShelf.setLook(blue); 
+    EQ1Freq.setLook(blue); 
+    EQ1Gain.setLook(blue); 
+    EQ1Quality.setLook(blue); 
+    EQ2Freq.setLook(green); 
+    EQ2Gain.setLook(green); 
+    EQ2Quality.setLook(green); 
     //Next the bounds are set
-    knob1.setBounds(70,300,60,60);
-    knob2.setBounds(140,300,60,60);
+    highCutShelf.setBounds(70, 330, 60,60);
+    lowCutShelf.setBounds(70,270, 60,60);
+    highCutFreq.setBounds(130,330,60,60);
+    lowCutFreq.setBounds(130,270,60,60);
+
+    //bounds for EQ1 knobs
+    EQ1Freq.setBounds(300, 350, 40, 40); 
+    EQ1Gain.setBounds(340, 350, 40, 40); 
+    EQ1Quality.setBounds(380, 350, 40, 40); 
+
+    //bounds for EQ2 knobs
+    EQ2Freq.setBounds(300, 310, 40, 40); 
+    EQ2Gain.setBounds(340, 310, 40, 40); 
+    EQ2Quality.setBounds(380, 310, 40, 40); 
 
 }
 
