@@ -28,25 +28,13 @@ class TTCOLook : public LookAndFeel_V4{
             void setLook(int x){
                 if(x==1){
                     RotaryImage = ImageCache::getFromMemory(
-                    BinaryData::TTCOKnob1_png, BinaryData::TTCOKnob1_pngSize); 
+                    BinaryData::TTCOKnobV2_B_png, BinaryData::TTCOKnobV2_B_pngSize); 
                 } else {
                 //Currently, any other number is set to Lime
                     RotaryImage = ImageCache::getFromMemory(
-                    BinaryData::TTCOKnob2_png, BinaryData::TTCOKnob2_pngSize); 
+                    BinaryData::TTCOKnobV2_G_png, BinaryData::TTCOKnobV2_G_pngSize); 
                 }
             }
-        //Sets the asset usage for the rotary slider
-        // void SetRotaryImage(int x){
-        //     //1 is equal to Teal
-        //     if(x==1){
-        //         RotaryImage = ImageCache::getFromMemory(
-        //             BinaryData::TTCOKnob1_png, BinaryData::TTCOKnob1_pngSize); 
-        //     } else {
-        //         //Currently, any other number is set to Lime
-        //         RotaryImage = ImageCache::getFromMemory(
-        //             BinaryData::TTCOKnob2_png, BinaryData::TTCOKnob2_pngSize); 
-        //     }
-        // }
 
 
     private:

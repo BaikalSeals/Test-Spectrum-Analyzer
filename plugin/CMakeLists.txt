@@ -3,8 +3,8 @@ cmake_minimum_required(VERSION 3.22)
 project(BaikalSpectrumAnalyzer VERSION 0.1.0)
 
 juce_add_binary_data(Assets SOURCES 
-  Assets/TTCOKnob1.png 
-  Assets/TTCOKnob2.png 
+  Assets/TTCOKnobV2_B.png 
+  Assets/TTCOKnobV2_G.png 
 )
 
 juce_add_plugin(${PROJECT_NAME}
