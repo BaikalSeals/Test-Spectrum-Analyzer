@@ -36,7 +36,8 @@ private:
     TTCOLook blue; 
 
     //Creating the knobs
-    TTCOKnob highCutFreq,
+    TTCOKnob 
+    highCutFreq,
     lowCutFreq,
     lowCutShelf, 
     highCutShelf, 

@@ -4,7 +4,8 @@
 
 class TTCOKnob : public Slider{
     public: 
-        TTCOKnob(): Slider(SliderStyle::RotaryHorizontalVerticalDrag, TextEntryBoxPosition::NoTextBox){
+
+        TTCOKnob(): Slider(SliderStyle::RotaryHorizontalVerticalDrag, Slider::TextEntryBoxPosition::TextBoxLeft){
             setMouseCursor(MouseCursor::PointingHandCursor);
         }
 
@@ -15,4 +16,6 @@ class TTCOKnob : public Slider{
         ~TTCOKnob(){
             setLookAndFeel(nullptr); 
         }
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(TTCOKnob)
 }; 

@@ -417,9 +417,9 @@ void AudioPluginAudioProcessor::updateFilters(){
 
   updatePeakFilter(chainSettings); 
   auto& leftHighCut = leftChain.get<ChainPositions::HighCut>(); 
-  auto& leftLowCut = leftChain.get<ChainPositions::HighCut>(); 
+  auto& leftLowCut = leftChain.get<ChainPositions::LowCut>(); //Possible source of error
   auto& rightHighCut = rightChain.get<ChainPositions::HighCut>(); 
-  auto& rightLowCut = rightChain.get<ChainPositions::HighCut>(); 
+  auto& rightLowCut = rightChain.get<ChainPositions::LowCut>(); //Possible source of error
 
   auto lowcutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
     chainSettings.lowCutFreq, getSampleRate(), 2*(chainSettings.lowCutSlope +1)); 
@@ -428,9 +428,9 @@ void AudioPluginAudioProcessor::updateFilters(){
     chainSettings.highCutFreq, getSampleRate(), 2*(chainSettings.highCutSlope +1)); 
 
   updateCutFilter(leftLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
-  updateCutFilter(leftHighCut, lowcutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(leftHighCut, highcutCoefficients, chainSettings.highCutSlope); //Possible source of error
   updateCutFilter(rightLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
-  updateCutFilter(rightHighCut, lowcutCoefficients, chainSettings.lowCutSlope); 
+  updateCutFilter(rightHighCut, highcutCoefficients, chainSettings.highCutSlope); //Possible source of error
 }
 
 

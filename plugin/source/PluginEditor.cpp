@@ -54,8 +54,6 @@ void AudioPluginComponent::timerCallback(){
   verticalMeterL.setPeak(processorRef.getPeakValue(0)); 
   verticalMeterR.setPeak(processorRef.getPeakValue(1));
 
-
-
   verticalMeterL.repaint(); 
   verticalMeterR.repaint(); 
 
@@ -106,20 +104,22 @@ void AudioPluginComponent::resized()
     EQ2Gain.setLook(green); 
     EQ2Quality.setLook(green); 
     //Next the bounds are set
+    //The bounds for the knobs need to have a 4:5 ration of 
+    //width to height
     highCutShelf.setBounds(70, 330, 60,60);
     lowCutShelf.setBounds(70,270, 60,60);
     highCutFreq.setBounds(130,330,60,60);
     lowCutFreq.setBounds(130,270,60,60);
 
     //bounds for EQ1 knobs
-    EQ1Freq.setBounds(300, 350, 40, 40); 
-    EQ1Gain.setBounds(340, 350, 40, 40); 
-    EQ1Quality.setBounds(380, 350, 40, 40); 
+    EQ1Freq.setBounds(300, 350, 40, 50); 
+    EQ1Gain.setBounds(340, 350, 40, 50); 
+    EQ1Quality.setBounds(380, 350, 40, 50); 
 
     //bounds for EQ2 knobs
-    EQ2Freq.setBounds(300, 310, 40, 40); 
-    EQ2Gain.setBounds(340, 310, 40, 40); 
-    EQ2Quality.setBounds(380, 310, 40, 40); 
+    EQ2Freq.setBounds(300, 200, 40, 40); 
+    EQ2Gain.setBounds(340, 200, 40, 40); 
+    EQ2Quality.setBounds(380, 200, 40, 40); 
 
 }
 
