@@ -26,6 +26,12 @@ public:
     void timerCallback() override; 
 
 private:
+
+    //IMPORTANT! Any variable that is created will be destructed in
+    //reverse order from the way it is written here. This means you
+    //want to declare your attachment variables after their non attached
+    //counter parts
+
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     AudioPluginAudioProcessor& processorRef;

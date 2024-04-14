@@ -170,14 +170,6 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
                                               juce::MidiBuffer& )
 {
   juce::ScopedNoDenormals noDenormals; 
-
-  //Gets the rms levels using the getRmsLevel function 
-  rmsLevelLeft = Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples())); 
-  rmsLevelRight = Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
-  
-  //Gets the peak levels using getMagnitude 
-  peakLeft = Decibels::gainToDecibels(buffer.getMagnitude(0, 0, buffer.getNumSamples())); 
-  peakRight = Decibels::gainToDecibels(buffer.getMagnitude(1, 0, buffer.getNumSamples())); 
  
   //This is necessary set up for manipulation of the audio signal 
   auto totalNumInputChannels = getTotalNumInputChannels(); 
@@ -228,6 +220,16 @@ void AudioPluginAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer,
 
   auto& rightHighCut = rightChain.get<ChainPositions::HighCut>(); 
   updateCutFilter(rightHighCut, highcutCoefficients, chainSettings.highCutSlope); 
+
+  //Gets the rms levels using the getRmsLevel function 
+  //The rms levels are obtained after the processing done. These values could be gotten
+  //prior to processing to show the volume levels of the input signal rather than the processed signal
+  rmsLevelLeft = Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples())); 
+  rmsLevelRight = Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
+  
+  //Gets the peak levels using getMagnitude 
+  peakLeft = Decibels::gainToDecibels(buffer.getMagnitude(0, 0, buffer.getNumSamples())); 
+  peakRight = Decibels::gainToDecibels(buffer.getMagnitude(1, 0, buffer.getNumSamples())); 
 
 
 }
