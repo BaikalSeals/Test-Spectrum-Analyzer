@@ -13,13 +13,41 @@ enum Slope{
 //We want to extract parameters from the audio processor value tree state
 //A data structure is needed to keep this in order
 struct ChainSettings{
-    float peak1Freq {0}, peak1GainInDecibels{0}, peak1Quality {1.f}; 
+    float peak1Freq {0}, peak1GainInDecibels{0}, peak1Quality {1.f};
     float peak2Freq {0}, peak2GainInDecibels{0}, peak2Quality {1.f}; 
     float lowCutFreq {0}, highCutFreq {0}; 
     Slope lowCutSlope {Slope::Slope12}, highCutSlope {Slope::Slope12};
 }; 
 
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts); 
+
+//Aliases created so that we do not have to deal with writing out all the
+//nested namespaces
+using Filter = juce::dsp::IIR::Filter<float>; 
+
+//The IIR filter class has a response of 12db when it is configured as low or
+//high pass filter. In order to get 48 db per octave we will need 4 of these filters.
+//We can use 4 of these filters to pass through a processing chain in order to pass one
+//context and have it run through 4 automatically. 
+using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>; 
+
+//This is a chain that represents the whole mono signal path. The first cutfilter is
+//the low cut, then the Filter is 1st EQ (peak1), then the next filter is the 2nd EQ (peak2),
+//and finally the last cutfilter is the highcut 
+using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, Filter, CutFilter>; 
+
+//enum for chain positions
+enum ChainPositions{
+    LowCut,
+    Peak1,
+    Peak2,
+    HighCut
+}; 
+
+// using Coefficients = Filter::CoefficientsPtr; 
+// void updateCoefficients(Coefficients& old, const Coefficients& replacements); 
+
+// Coefficients makePeakFilter(const ChainSettings& chainSettings, double sampleRate); 
 
 //==============================================================================
 class AudioPluginAudioProcessor  : public juce::AudioProcessor
@@ -63,7 +91,6 @@ public:
 
     //Added==========================================
     
-    
     //rms values for the volume meter
     float getRmsValue(const int channel) const;
     
@@ -76,40 +103,18 @@ public:
     juce::AudioProcessorValueTreeState apvts {
         *this, nullptr, "Parameters", createParameterLayout()}; 
 
-    
+    void updateCutFilter2(CutFilter& cut, const juce::ReferenceCountedArray<juce::dsp::IIR::Coefficients<float>> cutCoefficients, const Slope& slope); 
 
+    
 private:
     //Gets rms levels for the volume meter
     float rmsLevelLeft, rmsLevelRight; 
-    //values for peak value 
+    //values for peak value for volume meter (not the EQ, just poor naming on my part)
     float peakLeft, peakRight; 
-
-    //Aliases created so that we do not have to deal with writing out all the
-    //nested namespaces
-    using Filter = juce::dsp::IIR::Filter<float>; 
-
-    //The IIR filter class has a response of 12db when it is configured as low or
-    //high pass filter. In order to get 48 db per octave we will need 4 of these filters.
-    //We can use 4 of these filters to pass through a processing chain in order to pass one
-    //context and have it run through 4 automatically. 
-    using CutFilter = juce::dsp::ProcessorChain<Filter, Filter, Filter, Filter>; 
-
-    //This is a chain that represents the whole mono signal path. The first cutfilter is
-    //the low cut, then the Filter is 1st EQ (peak1), then the next filter is the 2nd EQ (peak2),
-    //and finally the last cutfilter is the highcut 
-    using MonoChain = juce::dsp::ProcessorChain<CutFilter, Filter, Filter, CutFilter>; 
 
     //In order to do stereo we need two instances of this mono chain
     MonoChain leftChain, rightChain; 
 
-    //enum for chain positions
-    enum ChainPositions{
-        LowCut,
-        Peak1,
-        Peak2,
-        HighCut
-    }; 
-    
     //Writing out functions for the filters
     //This will allow for more easily implementing updates to the peak filters
     void updatePeakFilter(const ChainSettings& chainSettings); 

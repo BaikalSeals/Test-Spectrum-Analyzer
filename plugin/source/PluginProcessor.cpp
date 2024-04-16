@@ -3,8 +3,8 @@
 #include "PluginEditor.h"
 
 //==============================================================================
-AudioPluginAudioProcessor::AudioPluginAudioProcessor()
-     : AudioProcessor (BusesProperties()
+AudioPluginAudioProcessor::AudioPluginAudioProcessor() : 
+      AudioProcessor (BusesProperties()
                      #if ! JucePlugin_IsMidiEffect
                       #if ! JucePlugin_IsSynth
                        .withInput  ("Input",  juce::AudioChannelSet::stereo(), true)
@@ -279,7 +279,8 @@ void AudioPluginAudioProcessor::setStateInformation (const void* data, int sizeI
 }
 
 //Added ==========================================================
-//
+
+
 //Gets Rms Value in order for the meter to display volume
 float AudioPluginAudioProcessor::getRmsValue(const int channel) const {
   //Determines if it is channel 1 or 0 and returns the correct value
@@ -306,6 +307,7 @@ float AudioPluginAudioProcessor::getPeakValue(const int channel) const {
   return 0.f; 
 }
 
+
 ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts){
   ChainSettings settings; 
   //We have to get raw paremeters since this is needed in real world values and
@@ -320,6 +322,7 @@ ChainSettings getChainSettings(juce::AudioProcessorValueTreeState& apvts){
   settings.peak2Freq = apvts.getRawParameterValue("Peak2 Freq")->load(); 
   settings.peak2GainInDecibels = apvts.getRawParameterValue("Peak2 Gain")->load(); 
   settings.peak2Quality = apvts.getRawParameterValue("Peak2 Quality")->load(); 
+
 
   return settings; 
 }
@@ -423,10 +426,10 @@ void AudioPluginAudioProcessor::updateFilters(){
   auto& rightHighCut = rightChain.get<ChainPositions::HighCut>(); 
   auto& rightLowCut = rightChain.get<ChainPositions::LowCut>(); //Possible source of error
 
-  auto lowcutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
+  auto lowcutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
     chainSettings.lowCutFreq, getSampleRate(), 2*(chainSettings.lowCutSlope +1)); 
 
-  auto highcutCoefficients = juce::dsp::FilterDesign<float>::designIIRHighpassHighOrderButterworthMethod(
+  auto highcutCoefficients = juce::dsp::FilterDesign<float>::designIIRLowpassHighOrderButterworthMethod(
     chainSettings.highCutFreq, getSampleRate(), 2*(chainSettings.highCutSlope +1)); 
 
   updateCutFilter(leftLowCut, lowcutCoefficients, chainSettings.lowCutSlope); 
@@ -435,6 +438,14 @@ void AudioPluginAudioProcessor::updateFilters(){
   updateCutFilter(rightHighCut, highcutCoefficients, chainSettings.highCutSlope); //Possible source of error
 }
 
+//This function is essentially just a wrapper for the updateCutFilter function
+//This though is required since the updateCutFilter function is private, but is still needed
+//for the GUI monoChain to utilize updateCutFilter
+
+void AudioPluginAudioProcessor::updateCutFilter2(CutFilter& cut, 
+const juce::ReferenceCountedArray<juce::dsp::IIR::Coefficients<float>> cutCoefficients, const Slope& slope){
+  updateCutFilter(cut, cutCoefficients, slope); 
+}
 
 //==============================================================================
 // This creates new instances of the plugin..
